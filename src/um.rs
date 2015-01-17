@@ -100,5 +100,4 @@ fn main() {
       v => panic!("invalid instruction {:?}", v), 
     }
   }
-  std::io::stdin().read_u8();
 }
