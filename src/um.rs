@@ -12,11 +12,13 @@ fn main() {
 
   let mut registers = [0u32; 8];
 
-  let mut arrays : Vec<Vec<u32>> = vec!();
+  let mut arrays: Vec<Vec<u32>> = vec!();
 
   let mut program = File::open(&Path::new(args[1].clone()));
 
   let mut array0 = vec!();
+
+  let mut abandoned: Vec<usize> = vec!();
 
   loop {
     match program.read_be_u32() {
@@ -64,12 +66,28 @@ fn main() {
 
       8u32 => {
         let mut array = vec!();
-        array.resize(registers[c] as usize, 0u32);
-        registers[b] = arrays.len() as u32;
-        arrays.push(array);
-      }
 
-      9u32 => arrays[registers[c] as usize] = vec!(),
+        array.resize(registers[c] as usize, 0u32);
+
+        registers[b] = match abandoned.len() > 0 {
+          true => {
+            let n = abandoned.pop().unwrap();
+            arrays[n] = array;
+            n
+          },
+          false => {
+            let n = arrays.len();
+            arrays.push(array);
+            n
+          }
+        } as u32;
+      },
+
+      9u32 => {
+        let n = registers[c] as usize;
+        arrays[n] = vec!();
+        abandoned.push(n);
+      },
 
       10u32 => 
         match std::io::stdout().write_u8(registers[c] as u8) {
