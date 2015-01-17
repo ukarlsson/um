@@ -69,13 +69,12 @@ fn main() {
 
         array.resize(registers[c] as usize, 0u32);
 
-        registers[b] = match abandoned.len() > 0 {
-          true => {
-            let n = abandoned.pop().unwrap();
+        registers[b] = match abandoned.pop() {
+          Some(n) => {
             arrays[n] = array;
             n
           },
-          false => {
+          None => {
             let n = arrays.len();
             arrays.push(array);
             n
