@@ -1,0 +1,9 @@
+[package]
+
+name = "um"
+version = "0.0.1"
+authors = [ "Ulf Karlsson <ukarlsson@gmail.com>" ]
+
+[[bin]]
+
+name = "um"
